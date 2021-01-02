@@ -586,6 +586,13 @@ gsta() {
   done < <(ls -A1)
 }
 
+# Label: Git Update (all)
+# Description: Updates the Git version for all projects.
+# Parameters: $1 (required) - Version.
+gua() {
+  _update_versions ".git-version" "$1"
+}
+
 # Label: Git Update
 # Description: Fetch commits, prune untracked references, review each commit (optional, with diff), and pull (optional).
 gup() {

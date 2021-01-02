@@ -437,9 +437,9 @@ _process_gh_option() {
   esac
 }
 
-#-------------------------------------------------#
+#--------------------------------------------------#
 # Section: https://rubyonrails.org:[Ruby on Rails] #
-#-------------------------------------------------#
+#--------------------------------------------------#
 
 # Label: Create Rails Skeleton
 # Description: Create new Rails application skeleton.
@@ -642,4 +642,46 @@ _process_dots_option() {
     *)
       printf "%s\n" "ERROR: Invalid option.";;
   esac
+}
+
+#--------------------#
+# Section: Utilities #
+#--------------------#
+
+# Label: Update Versions
+# Description: Updates version files for all projects.
+# Parameters: $1 (required) - File, $2 (required) - Version.
+_update_versions() {
+  local file="$1"
+  local version="$2"
+
+  if [[ -z "$file" ]]; then
+    printf "%s\n" "ERROR: File must be supplied."
+    return 1
+  fi
+
+  if [[ -z "$version" ]]; then
+    printf "%s\n" "ERROR: Version must be supplied."
+    return 1
+  fi
+
+  while read -r project; do
+    (
+      cd "$project"
+
+      if [[ -e "$file" ]]; then
+        local old_version=$(head -n 1 "$file")
+        local new_version="$version"
+
+        printf "\033[36m${project}\033[m: " # Outputs project in cyan color.
+
+        if [[ "$old_version" != "$new_version" ]]; then
+          printf "%s\n" "$new_version" > "$file"
+          printf "%s\n" "$old_version --> $new_version"
+        else
+          printf "✓\n"
+        fi
+      fi
+    )
+  done < <(ls -A1)
 }
